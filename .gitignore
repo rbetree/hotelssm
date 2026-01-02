@@ -1,1 +1,23 @@
-j2ee-ssm系统需求设计.md
+# ===== 构建产物 =====
+target/
+out/
+*.class
+
+# ===== 日志/临时文件 =====
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# ===== IDE =====
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# ===== class =====
+class/
+
+# ===== 运行环境私有配置（如需提交请删除此项）=====
+# src/config/db.properties
