@@ -16,24 +16,27 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ischoolbar.programmer.entity.Account;
 import com.ischoolbar.programmer.service.AccountService;
+import com.ischoolbar.programmer.service.ActivityService;
 import com.ischoolbar.programmer.service.RoomTypeService;
 
 /**
- * Ç°Ì¨Ê×Ò³¿ØÖÆÆ÷
+ * Ç°Ì¨ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * @author ymj
  *
  */
 @RequestMapping("/home")
 @Controller
 public class HomeController {
-	
+
 	@Autowired
 	private RoomTypeService roomTypeService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private ActivityService activityService;
 	
 	/**
-	 * Ç°Ì¨Ê×Ò³
+	 * Ç°Ì¨ï¿½ï¿½Ò³
 	 * @param model
 	 * @param name
 	 * @return
@@ -47,13 +50,14 @@ public class HomeController {
 		queryMap.put("offset", 0);
 		queryMap.put("pageSize", 999);
 		model.addObject("roomTypeList", roomTypeService.findList(queryMap));
+		model.addObject("activityList", activityService.findAll());
 		model.setViewName("home/index/index");
 		model.addObject("kw", name);
 		return model;
 	}
 	
 	/**
-	 * µÇÂ¼Ò³Ãæ
+	 * ï¿½ï¿½Â¼Ò³ï¿½ï¿½
 	 * @param model
 	 * @return
 	 */
@@ -65,7 +69,7 @@ public class HomeController {
 	}
 	
 	/**
-	 * ×¢²áÒ³Ãæ
+	 * ×¢ï¿½ï¿½Ò³ï¿½ï¿½
 	 * @param model
 	 * @return
 	 */
@@ -77,7 +81,7 @@ public class HomeController {
 	}
 	
 	/**
-	 * µÇÂ¼ÐÅÏ¢Ìá½»
+	 * ï¿½ï¿½Â¼ï¿½ï¿½Ï¢ï¿½á½»
 	 * @param account
 	 * @return
 	 */
@@ -87,60 +91,60 @@ public class HomeController {
 		Map<String,String> retMap = new HashMap<String, String>();
 		if(account == null){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÇëÌîÐ´ÕýÈ·µÄÓÃ»§ÐÅÏ¢£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½È·ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½");
 			return retMap;
 		}
 		if(StringUtils.isEmpty(account.getName())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÓÃ»§Ãû²»ÄÜÎª¿Õ£¡");
+			retMap.put("msg", "ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Õ£ï¿½");
 			return retMap;
 		}
 		if(StringUtils.isEmpty(account.getPassword())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÃÜÂë²»ÄÜÎª¿Õ£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½ë²»ï¿½ï¿½Îªï¿½Õ£ï¿½");
 			return retMap;
 		}
 		if(StringUtils.isEmpty(vcode)){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÑéÖ¤Âë²»ÄÜÎª¿Õ£¡");
+			retMap.put("msg", "ï¿½ï¿½Ö¤ï¿½ë²»ï¿½ï¿½Îªï¿½Õ£ï¿½");
 			return retMap;
 		}
 		Object attribute = request.getSession().getAttribute("accountLoginCpacha");
 		if(attribute == null){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÑéÖ¤Âë¹ýÆÚ£¬ÇëË¢ÐÂ£¡");
+			retMap.put("msg", "ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ë¢ï¿½Â£ï¿½");
 			return retMap;
 		}
 		if(!vcode.equalsIgnoreCase(attribute.toString())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÑéÖ¤Âë´íÎó£¡");
+			retMap.put("msg", "ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½");
 			return retMap;
 		}
 		Account findByName = accountService.findByName(account.getName());
 		if(findByName == null){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÓÃ»§Ãû²»´æÔÚ£¡");
+			retMap.put("msg", "ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½");
 			return retMap;
 		}
 		if(!account.getPassword().equals(findByName.getPassword())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÃÜÂë´íÎó£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 			return retMap;
 		}
 		if(findByName.getStatus() == -1){
 			retMap.put("type", "error");
-			retMap.put("msg", "¸ÃÓÃ»§ÒÑ±»½ûÓÃ£¬ÇëÁªÏµ¹ÜÀíÔ±£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½");
 			return retMap;
 		}
 		request.getSession().setAttribute("account", findByName);
 		request.getSession().setAttribute("accountLoginCpacha", null);
 		retMap.put("type", "success");
-		retMap.put("msg", "µÇÂ¼³É¹¦£¡");
+		retMap.put("msg", "ï¿½ï¿½Â¼ï¿½É¹ï¿½ï¿½ï¿½");
 		return retMap;
 	}
 	
 	/**
-	 * ×¢²áÐÅÏ¢Ìá½»
+	 * ×¢ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½á½»
 	 * @param account
 	 * @return
 	 */
@@ -150,41 +154,41 @@ public class HomeController {
 		Map<String,String> retMap = new HashMap<String, String>();
 		if(account == null){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÇëÌîÐ´ÕýÈ·µÄÓÃ»§ÐÅÏ¢£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½È·ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½");
 			return retMap;
 		}
 		if(StringUtils.isEmpty(account.getName())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÓÃ»§Ãû²»ÄÜÎª¿Õ£¡");
+			retMap.put("msg", "ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Õ£ï¿½");
 			return retMap;
 		}
 		if(StringUtils.isEmpty(account.getPassword())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÃÜÂë²»ÄÜÎª¿Õ£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½ë²»ï¿½ï¿½Îªï¿½Õ£ï¿½");
 			return retMap;
 		}
 		if(StringUtils.isEmpty(account.getMobile())){
 			retMap.put("type", "error");
-			retMap.put("msg", "ÊÖ»úºÅ²»ÄÜÎª¿Õ£¡");
+			retMap.put("msg", "ï¿½Ö»ï¿½ï¿½Å²ï¿½ï¿½ï¿½Îªï¿½Õ£ï¿½");
 			return retMap;
 		}
 		if(isExist(account.getName())){
 			retMap.put("type", "error");
-			retMap.put("msg", "¸ÃÓÃ»§ÃûÒÑ¾­´æÔÚ£¡");
+			retMap.put("msg", "ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ú£ï¿½");
 			return retMap;
 		}
 		if(accountService.add(account) <= 0){
 			retMap.put("type", "error");
-			retMap.put("msg", "×¢²áÊ§°Ü£¬ÇëÁªÏµ¹ÜÀíÔ±£¡");
+			retMap.put("msg", "×¢ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½");
 			return retMap;
 		}
 		retMap.put("type", "success");
-		retMap.put("msg", "×¢²á³É¹¦£¡");
+		retMap.put("msg", "×¢ï¿½ï¿½É¹ï¿½ï¿½ï¿½");
 		return retMap;
 	}
 	
 	/**
-	 * ÍË³öµÇÂ¼
+	 * ï¿½Ë³ï¿½ï¿½ï¿½Â¼
 	 * @param request
 	 * @return
 	 */

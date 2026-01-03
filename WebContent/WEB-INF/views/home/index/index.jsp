@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,8 +43,28 @@
   <!---->
   <!---预订菜单--->
   <div id="due_menu">
-    <!--关于-->
-    
+    <!--活动公告-->
+    <c:if test="${not empty activityList}">
+    <div id="activities" style="margin-bottom:30px;">
+      <p class="booking_tab"><span></span>酒店活动</p>
+      <div style="padding:20px;">
+        <c:forEach items="${activityList}" var="activity" varStatus="status">
+          <c:if test="${status.index < 3}">
+          <div style="border:1px solid #e0e0e0;padding:15px;margin-bottom:15px;border-radius:5px;background:#f9f9f9;">
+            <h3 style="color:#333;margin:0 0 10px 0;">${activity.title}</h3>
+            <p style="color:#666;line-height:1.6;margin:0;">${activity.content}</p>
+            <c:if test="${activity.startTime != null && activity.endTime != null}">
+              <p style="color:#999;font-size:12px;margin-top:10px;">
+                活动时间：<fmt:formatDate value="${activity.startTime}" pattern="yyyy-MM-dd"/> 至 <fmt:formatDate value="${activity.endTime}" pattern="yyyy-MM-dd"/>
+              </p>
+            </c:if>
+          </div>
+          </c:if>
+        </c:forEach>
+      </div>
+    </div>
+    </c:if>
+
     <!--客房-->
     <div id="guest_rooms">
       <p class="booking_tab"><span></span>客房列表</p>
