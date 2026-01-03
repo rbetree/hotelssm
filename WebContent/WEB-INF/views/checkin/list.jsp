@@ -510,7 +510,8 @@
                 	$("#add-idCard").val(selectedOrder.idCard);
                 	$("#add-mobile").val(selectedOrder.mobile);
                 	$("#add-bookOrderId").val(selectedOrder.id);
-                	$("#add-status").combobox('setValue',selectedOrder.status);
+	                	// 入住单状态与预定单状态不是同一套枚举，入住登记后固定为“已入住”
+	                	$("#add-status").combobox('setValue',0);
                 	$("#add-roomTypeId").combobox('setValue',selectedOrder.roomTypeId);
                 	$("#add-remark").val(selectedOrder.remark);
                 	
@@ -520,7 +521,8 @@
                 	$("#edit-idCard").val(selectedOrder.idCard);
                 	$("#edit-mobile").val(selectedOrder.mobile);
                 	$("#edit-bookOrderId").val(selectedOrder.id);
-                	$("#edit-status").combobox('setValue',selectedOrder.status);
+	                	// 入住单状态与预定单状态不是同一套枚举，入住登记后固定为“已入住”
+	                	$("#edit-status").combobox('setValue',0);
                 	$("#edit-roomTypeId").combobox('setValue',selectedOrder.roomTypeId);
                 	$("#edit-remark").val(selectedOrder.remark);
                 	
@@ -544,7 +546,7 @@
             		fitColumns:true,
             		idField:'id',
             	    treeField:'name',
-            	    queryParams:{status:0},
+	            	    queryParams:{status:1},
             		fit:true,
             		columns:[[
             			{ field:'chk',checkbox:true},
@@ -560,20 +562,26 @@
             			{ field:'name',title:'预定人',width:60,sortable:true},
             			{ field:'arriveDate',title:'入住日期',width:100,sortable:true},
             			{ field:'leaveDate',title:'离店日期',width:100,sortable:true},
-            			{ field:'status',title:'状态',width:100,formatter:function(value,row,index){
-            				switch(value){
-            					case 0:{
-            						return '预定中';
-            					}
-            					case 1:{
-            						return '已入住';
-            					}
-            					case 2:{
-            						return '已结算离店';
-            					}
-            				}
-            				return value;
-            			}},
+	            			{ field:'status',title:'状态',width:100,formatter:function(value,row,index){
+	            				switch(value){
+	            					case 0:{
+	            						return '待确认';
+	            					}
+	            					case 1:{
+	            						return '已确认';
+	            					}
+	            					case 2:{
+	            						return '已入住';
+	            					}
+	            					case 3:{
+	            						return '已完成';
+	            					}
+	            					case 4:{
+	            						return '已取消';
+	            					}
+	            				}
+	            				return value;
+	            			}},
             			{ field:'remark',title:'备注',width:120,sortable:true}
             		]]
             	});

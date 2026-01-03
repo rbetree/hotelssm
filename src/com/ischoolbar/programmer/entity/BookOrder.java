@@ -5,22 +5,22 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 /**
- * Ô¤¶¨¶©µ¥ÊµÌåÀà
+ * é¢„å®šè®¢å•å®ä½“ç±»
  * @author ymj
  *
  */
 @Component
 public class BookOrder {
-	private Long id;//Ô¤¶¨¶©µ¥id
-	private Long accountId;//¿Í»§id
-	private Long roomTypeId;//·¿ĞÍid
-	private String name;//Ô¤¶¨ÕßĞÕÃû
-	private String idCard;//Éí·İÖ¤ºÅÂë
-	private String mobile;//ÊÖ»úºÅ
-	private int status;//×´Ì¬£º0£ºÔ¤¶¨ÖĞ£¬1£ºÒÑÈë×¡,2:ÒÑ½áËãÀëµê
-	private String arriveDate;//Èë×¡ÈÕÆÚ
-	private String leaveDate;//ÀëµêÈÕÆÚ
-	private Date createTime;//Ô¤¶¨ÈÕÆÚ
+	private Long id;//é¢„å®šè®¢å•id
+	private Long accountId;//å®¢æˆ·id
+	private Long roomTypeId;//æˆ¿å‹id
+	private String name;//é¢„å®šè€…å§“å
+	private String idCard;//èº«ä»½è¯å·ç 
+	private String mobile;//æ‰‹æœºå·
+	private int status;//çŠ¶æ€ï¼š0ï¼šå¾…ç¡®è®¤ï¼Œ1ï¼šå·²ç¡®è®¤ï¼Œ2ï¼šå·²å…¥ä½ï¼Œ3ï¼šå·²å®Œæˆï¼Œ4ï¼šå·²å–æ¶ˆ
+	private String arriveDate;//å…¥ä½æ—¥æœŸ
+	private String leaveDate;//ç¦»åº—æ—¥æœŸ
+	private Date createTime;//é¢„å®šæ—¥æœŸ
 	private String remark;
 	public Long getId() {
 		return id;
