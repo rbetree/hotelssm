@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -44,15 +45,29 @@ public class HomeAccountController {
 	 * @return
 	 */
 	@RequestMapping(value="/index",method=RequestMethod.GET)
-	public ModelAndView list(ModelAndView model,HttpServletRequest request
+	public ModelAndView list(ModelAndView model,HttpServletRequest request,
+			@RequestParam(name="status",required=false) Integer status,
+			@RequestParam(name="roomTypeId",required=false) Long roomTypeId,
+			@RequestParam(name="arriveDateStart",defaultValue="") String arriveDateStart,
+			@RequestParam(name="leaveDateEnd",defaultValue="") String leaveDateEnd
 			){
 		Account account = (Account)request.getSession().getAttribute("account");
 		Map<String,Object> queryMap = new HashMap<String, Object>();
 		queryMap.put("accountId", account.getId());
+		if(status != null && status.intValue() == -1) status = null;
+		if(roomTypeId != null && roomTypeId.longValue() == -1) roomTypeId = null;
+		if(!StringUtils.isEmpty(arriveDateStart)) queryMap.put("arriveDateStart", arriveDateStart);
+		if(!StringUtils.isEmpty(leaveDateEnd)) queryMap.put("leaveDateEnd", leaveDateEnd);
+		queryMap.put("status", status);
+		queryMap.put("roomTypeId", roomTypeId);
 		queryMap.put("offset", 0);
 		queryMap.put("pageSize", 999);
 		model.addObject("bookOrderList", bookOrderService.findList(queryMap));
 		model.addObject("roomTypeList", roomTypeService.findAll());
+		model.addObject("status", status == null ? -1 : status);
+		model.addObject("roomTypeId", roomTypeId == null ? -1 : roomTypeId);
+		model.addObject("arriveDateStart", arriveDateStart);
+		model.addObject("leaveDateEnd", leaveDateEnd);
 		model.setViewName("home/account/index");
 		return model;
 	}
@@ -85,13 +100,6 @@ public class HomeAccountController {
 			ret.put("msg", "请填写正确的预定订单信息!");
 			return ret;
 		}
-		Account account = (Account)request.getSession().getAttribute("account");
-		if(account == null){
-			ret.put("type", "error");
-			ret.put("msg", "客户不能为空!");
-			return ret;
-		}
-		bookOrder.setAccountId(account.getId());
 		if(bookOrder.getRoomTypeId() == null){
 			ret.put("type", "error");
 			ret.put("msg", "房型不能为空!");
@@ -122,6 +130,71 @@ public class HomeAccountController {
 			ret.put("msg", "离店时间不能为空!");
 			return ret;
 		}
+		if(bookOrder.getArriveDate().compareTo(bookOrder.getLeaveDate()) >= 0){
+			ret.put("type", "error");
+			ret.put("msg", "离店时间必须大于入住时间!");
+			return ret;
+		}
+		// 游客可预订：未登录时自动注册并登录（用户名=手机号，密码=身份证后6位）
+		Account account = (Account)request.getSession().getAttribute("account");
+		if(account == null){
+			Account existAccount = accountService.findByName(bookOrder.getMobile());
+			if(existAccount != null){
+				if(existAccount.getStatus() == -1){
+					ret.put("type", "error");
+					ret.put("msg", "该用户已被禁用，请联系管理员!");
+					return ret;
+				}
+				if(!StringUtils.isEmpty(existAccount.getIdCard()) && !existAccount.getIdCard().equals(bookOrder.getIdCard())){
+					ret.put("type", "error");
+					ret.put("msg", "该手机号已注册，请使用账号登录后下单!");
+					return ret;
+				}
+				account = existAccount;
+			}else{
+				Account newAccount = new Account();
+				newAccount.setName(bookOrder.getMobile());
+				newAccount.setPassword(buildQuickPassword(bookOrder.getIdCard()));
+				newAccount.setRealName(bookOrder.getName());
+				newAccount.setIdCard(bookOrder.getIdCard());
+				newAccount.setMobile(bookOrder.getMobile());
+				newAccount.setAddress("");
+				newAccount.setStatus(0);
+				if(accountService.add(newAccount) <= 0){
+					ret.put("type", "error");
+					ret.put("msg", "快速注册失败，请稍后重试!");
+					return ret;
+				}
+				// 兼容：部分环境未回填自增ID时二次查询
+				if(newAccount.getId() == null){
+					newAccount = accountService.findByName(bookOrder.getMobile());
+					if(newAccount == null){
+						ret.put("type", "error");
+						ret.put("msg", "快速注册失败，请稍后重试!");
+						return ret;
+					}
+				}
+				account = newAccount;
+			}
+			request.getSession().setAttribute("account", account);
+		}
+		if(account == null){
+			ret.put("type", "error");
+			ret.put("msg", "客户不能为空!");
+			return ret;
+		}
+		bookOrder.setAccountId(account.getId());
+		RoomType roomType = roomTypeService.find(bookOrder.getRoomTypeId());
+		if(roomType == null){
+			ret.put("type", "error");
+			ret.put("msg", "房型不能为空!");
+			return ret;
+		}
+		if(roomType.getStatus() == 0 || roomType.getAvilableNum() == null || roomType.getAvilableNum() <= 0){
+			ret.put("type", "error");
+			ret.put("msg", "该房型已满房，请选择其他房型!");
+			return ret;
+		}
 		bookOrder.setCreateTime(new Date());
 		bookOrder.setStatus(0);
 		if(bookOrderService.add(bookOrder) <= 0){
@@ -129,20 +202,242 @@ public class HomeAccountController {
 			ret.put("msg", "添加失败，请联系管理员!");
 			return ret;
 		}
-		RoomType roomType = roomTypeService.find(bookOrder.getRoomTypeId());
 		//预定成功后去修改该房型的预定数
+		roomType.setBookNum(roomType.getBookNum() + 1);
+		roomType.setAvilableNum(roomType.getAvilableNum() - 1);
+		roomTypeService.updateNum(roomType);
+		//如果可用的房间数为0，则设置该房型状态已满
+		if(roomType.getAvilableNum() == 0){
+			roomType.setStatus(0);
+			roomTypeService.edit(roomType);
+		}
+		ret.put("type", "success");
+		ret.put("msg", "预定成功!");
+		return ret;
+	}
+
+	private String buildQuickPassword(String idCard){
+		if(StringUtils.isEmpty(idCard)) return "123456";
+		String trimmed = idCard.trim();
+		if(trimmed.length() <= 6) return trimmed;
+		return trimmed.substring(trimmed.length() - 6);
+	}
+	
+	/**
+	 * 取消预定订单（仅允许取消“预定中”的订单）
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/cancel_book_order",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String,String> cancelBookOrder(Long id,HttpServletRequest request){
+		Map<String,String> ret = new HashMap<String, String>();
+		if(id == null){
+			ret.put("type", "error");
+			ret.put("msg", "请选择要取消的订单!");
+			return ret;
+		}
+		Account account = (Account)request.getSession().getAttribute("account");
+		if(account == null){
+			ret.put("type", "error");
+			ret.put("msg", "登录会话超时或还未登录，请重新登录!");
+			return ret;
+		}
+		BookOrder bookOrder = bookOrderService.find(id);
+		if(bookOrder == null){
+			ret.put("type", "error");
+			ret.put("msg", "订单不存在!");
+			return ret;
+		}
+		if(bookOrder.getAccountId() == null || bookOrder.getAccountId().longValue() != account.getId().longValue()){
+			ret.put("type", "error");
+			ret.put("msg", "无权操作该订单!");
+			return ret;
+		}
+		if(bookOrder.getStatus() != 0){
+			ret.put("type", "error");
+			ret.put("msg", "当前订单状态不允许取消!");
+			return ret;
+		}
+		bookOrder.setStatus(3);//3：已取消
+		if(bookOrderService.edit(bookOrder) <= 0){
+			ret.put("type", "error");
+			ret.put("msg", "取消失败，请联系管理员!");
+			return ret;
+		}
+		RoomType roomType = roomTypeService.find(bookOrder.getRoomTypeId());
 		if(roomType != null){
-			roomType.setBookNum(roomType.getBookNum() + 1);
-			roomType.setAvilableNum(roomType.getAvilableNum() - 1);
+			//恢复房型的预定数与可用数
+			if(roomType.getBookNum() != null && roomType.getBookNum() > 0){
+				roomType.setBookNum(roomType.getBookNum() - 1);
+			}
+			if(roomType.getAvilableNum() != null){
+				roomType.setAvilableNum(roomType.getAvilableNum() + 1);
+			}
 			roomTypeService.updateNum(roomType);
-			//如果可用的房间数为0，则设置该房型状态已满
-			if(roomType.getAvilableNum() == 0){
-				roomType.setStatus(0);
+			//原来是满房，现在恢复可用
+			if(roomType.getStatus() == 0 && roomType.getAvilableNum() != null && roomType.getAvilableNum() > 0){
+				roomType.setStatus(1);
 				roomTypeService.edit(roomType);
 			}
 		}
 		ret.put("type", "success");
-		ret.put("msg", "预定成功!");
+		ret.put("msg", "取消成功!");
+		return ret;
+	}
+	
+	/**
+	 * 修改预定订单页面
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/edit_book_order",method=RequestMethod.GET)
+	public ModelAndView editBookOrder(ModelAndView model,Long id,HttpServletRequest request){
+		if(id == null){
+			model.setViewName("redirect:index");
+			return model;
+		}
+		Account account = (Account)request.getSession().getAttribute("account");
+		BookOrder bookOrder = bookOrderService.find(id);
+		if(bookOrder == null || account == null || bookOrder.getAccountId() == null || bookOrder.getAccountId().longValue() != account.getId().longValue()){
+			model.setViewName("redirect:index");
+			return model;
+		}
+		if(bookOrder.getStatus() != 0){
+			//非预定中订单不允许修改
+			model.setViewName("redirect:index");
+			return model;
+		}
+		model.addObject("bookOrder", bookOrder);
+		model.addObject("roomTypeList", roomTypeService.findAll());
+		model.setViewName("home/account/edit_book_order");
+		return model;
+	}
+	
+	/**
+	 * 修改预定订单提交（仅允许修改“预定中”的订单）
+	 * @param bookOrder
+	 * @return
+	 */
+	@RequestMapping(value="/edit_book_order",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String,String> editBookOrderAct(BookOrder bookOrder,HttpServletRequest request){
+		Map<String,String> ret = new HashMap<String, String>();
+		if(bookOrder == null || bookOrder.getId() == null){
+			ret.put("type", "error");
+			ret.put("msg", "请选择正确的订单!");
+			return ret;
+		}
+		Account account = (Account)request.getSession().getAttribute("account");
+		if(account == null){
+			ret.put("type", "error");
+			ret.put("msg", "登录会话超时或还未登录，请重新登录!");
+			return ret;
+		}
+		BookOrder existBookOrder = bookOrderService.find(bookOrder.getId());
+		if(existBookOrder == null){
+			ret.put("type", "error");
+			ret.put("msg", "订单不存在!");
+			return ret;
+		}
+		if(existBookOrder.getAccountId() == null || existBookOrder.getAccountId().longValue() != account.getId().longValue()){
+			ret.put("type", "error");
+			ret.put("msg", "无权操作该订单!");
+			return ret;
+		}
+		if(existBookOrder.getStatus() != 0){
+			ret.put("type", "error");
+			ret.put("msg", "当前订单状态不允许修改!");
+			return ret;
+		}
+		if(bookOrder.getRoomTypeId() == null){
+			ret.put("type", "error");
+			ret.put("msg", "房型不能为空!");
+			return ret;
+		}
+		if(StringUtils.isEmpty(bookOrder.getName())){
+			ret.put("type", "error");
+			ret.put("msg", "预定订单联系人名称不能为空!");
+			return ret;
+		}
+		if(StringUtils.isEmpty(bookOrder.getMobile())){
+			ret.put("type", "error");
+			ret.put("msg", "预定订单联系人手机号不能为空!");
+			return ret;
+		}
+		if(StringUtils.isEmpty(bookOrder.getIdCard())){
+			ret.put("type", "error");
+			ret.put("msg", "联系人身份证号不能为空!");
+			return ret;
+		}
+		if(StringUtils.isEmpty(bookOrder.getArriveDate())){
+			ret.put("type", "error");
+			ret.put("msg", "到达时间不能为空!");
+			return ret;
+		}
+		if(StringUtils.isEmpty(bookOrder.getLeaveDate())){
+			ret.put("type", "error");
+			ret.put("msg", "离店时间不能为空!");
+			return ret;
+		}
+		if(bookOrder.getArriveDate().compareTo(bookOrder.getLeaveDate()) >= 0){
+			ret.put("type", "error");
+			ret.put("msg", "离店时间必须大于入住时间!");
+			return ret;
+		}
+		
+		//只允许修改本人的订单，强制回填 accountId/status
+		bookOrder.setAccountId(account.getId());
+		bookOrder.setStatus(existBookOrder.getStatus());
+		
+		//房型变更时，先校验新房型是否可预订
+		boolean roomTypeChanged = existBookOrder.getRoomTypeId() != null
+				&& existBookOrder.getRoomTypeId().longValue() != bookOrder.getRoomTypeId().longValue();
+		RoomType newRoomType = null;
+		if(roomTypeChanged){
+			newRoomType = roomTypeService.find(bookOrder.getRoomTypeId());
+			if(newRoomType == null){
+				ret.put("type", "error");
+				ret.put("msg", "房型不能为空!");
+				return ret;
+			}
+			if(newRoomType.getStatus() == 0 || newRoomType.getAvilableNum() == null || newRoomType.getAvilableNum() <= 0){
+				ret.put("type", "error");
+				ret.put("msg", "该房型已满房，请选择其他房型!");
+				return ret;
+			}
+		}
+		
+		if(bookOrderService.edit(bookOrder) <= 0){
+			ret.put("type", "error");
+			ret.put("msg", "修改失败，请联系管理员!");
+			return ret;
+		}
+		
+		//判断房型是否发生变化：同步恢复旧房型数量，扣减新房型数量
+		if(roomTypeChanged){
+			RoomType oldRoomType = roomTypeService.find(existBookOrder.getRoomTypeId());
+			if(oldRoomType != null){
+				oldRoomType.setAvilableNum(oldRoomType.getAvilableNum() + 1);
+				oldRoomType.setBookNum(oldRoomType.getBookNum() - 1);
+				roomTypeService.updateNum(oldRoomType);
+				if(oldRoomType.getStatus() == 0 && oldRoomType.getAvilableNum() > 0){
+					oldRoomType.setStatus(1);
+					roomTypeService.edit(oldRoomType);
+				}
+			}
+			//使用上方已校验过的新房型对象
+			newRoomType.setAvilableNum(newRoomType.getAvilableNum() - 1);
+			newRoomType.setBookNum(newRoomType.getBookNum() + 1);
+			roomTypeService.updateNum(newRoomType);
+			if(newRoomType.getAvilableNum() <= 0){
+				newRoomType.setStatus(0);
+				roomTypeService.edit(newRoomType);
+			}
+		}
+		ret.put("type", "success");
+		ret.put("msg", "修改成功!");
 		return ret;
 	}
 	

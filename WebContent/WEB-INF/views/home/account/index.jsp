@@ -10,6 +10,7 @@
   <meta name="Keywords" content="灵悟酒店管理系统">
   <meta name="Description" content="灵悟酒店管理系统">
   <link rel="stylesheet" href="../../resources/home/css/index.css"/>
+  <link rel="stylesheet" href="../../resources/home/css/jquery-ui.min.css"/>
   <!--<link rel="stylesheet" href="css/myOrder.css"/>-->
   <style>
     #contain{
@@ -192,6 +193,29 @@
       <div class="content">
         
         <div class="order" style="display: block;">
+		  <form id="order-search-form" action="index" method="get" style="margin:10px 0;">
+			  <label>状态:</label>
+			  <select name="status" id="search-status" class="form-control" style="width:120px;display:inline-block;">
+				  <option value="-1" <c:if test="${status == -1}">selected</c:if>>全部</option>
+				  <option value="0" <c:if test="${status == 0}">selected</c:if>>预定中</option>
+				  <option value="1" <c:if test="${status == 1}">selected</c:if>>已入住</option>
+				  <option value="2" <c:if test="${status == 2}">selected</c:if>>已结算离店</option>
+				  <option value="3" <c:if test="${status == 3}">selected</c:if>>已取消</option>
+			  </select>
+			  <label style="margin-left:8px;">房型:</label>
+			  <select name="roomTypeId" id="search-roomType" class="form-control" style="width:180px;display:inline-block;">
+				  <option value="-1">全部</option>
+				  <c:forEach items="${roomTypeList }" var="roomType">
+					  <option value="${roomType.id }" <c:if test="${roomType.id == roomTypeId}">selected</c:if>>${roomType.name }</option>
+				  </c:forEach>
+			  </select>
+			  <label style="margin-left:8px;">入住从:</label>
+			  <input type="text" name="arriveDateStart" id="search-arriveDateStart" class="datepicker" style="width:110px;height:30px;" value="${arriveDateStart}"/>
+			  <label style="margin-left:8px;">离店至:</label>
+			  <input type="text" name="leaveDateEnd" id="search-leaveDateEnd" class="datepicker" style="width:110px;height:30px;" value="${leaveDateEnd}"/>
+			  <button type="submit" class="btn btn-success" style="width:80px;margin-left:8px;">查询</button>
+			  <button type="button" class="btn" style="width:80px;" onclick="window.location.href='index#order'">重置</button>
+		  </form>
           <table>
             <thead>
             <tr>
@@ -202,9 +226,12 @@
               <th>入住人</th>
               <th>手机号</th>
               <th>身份证号</th>
+              <th>入住日期</th>
+              <th>离店日期</th>
               <th>状态</th>
               <th>下单时间</th>
               <th>备注</th>
+              <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -219,6 +246,8 @@
 					<td>${bookOrder.name }</td>
 					<td>${bookOrder.mobile }</td>
 					<td>${bookOrder.idCard }</td>
+					<td>${bookOrder.arriveDate }</td>
+					<td>${bookOrder.leaveDate }</td>
 					<td>
 						<c:if test="${bookOrder.status == 0 }">
 			          		<font color="red">预定中</font>
@@ -229,9 +258,21 @@
 			          	<c:if test="${bookOrder.status == 2 }">
 			          		已结算离店
 			          	</c:if>
+						<c:if test="${bookOrder.status == 3 }">
+			          		<font color="#999">已取消</font>
+			          	</c:if>
 					</td>
 					<td><fmt:formatDate value="${bookOrder.createTime }" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 					<td>${bookOrder.remark }</td>
+					<td>
+						<c:if test="${bookOrder.status == 0 }">
+							<button type="button" class="btn" style="background:#d9534f;border-color:#d43f3a;color:#fff;" onclick="cancelBookOrder(${bookOrder.id})">取消</button>
+							<button type="button" class="btn btn-success" onclick="window.location.href='edit_book_order?id=${bookOrder.id}'">修改</button>
+						</c:if>
+						<c:if test="${bookOrder.status != 0 }">
+							-
+						</c:if>
+					</td>
                </tr>
                </c:forEach>
             </tbody>
@@ -290,7 +331,27 @@
     <!--底部-->
     <div id="c_footer"></div>
     <script src="../../resources/home/js/jquery-1.11.3.js"></script>
+    <script src="../../resources/home/js/jquery-ui.min.js"></script>
  <script>
+    function cancelBookOrder(id){
+    	if(!id)return;
+    	if(!confirm('确定要取消该预订吗？'))return;
+    	$.ajax({
+    		url:'cancel_book_order',
+    		type:'post',
+    		dataType:'json',
+    		data:{id:id},
+    		success:function(data){
+    			alert(data.msg);
+    			if(data.type == 'success'){
+    				window.location.reload();
+    			}
+    		}
+    	});
+    }
+	$(function(){
+		$(".datepicker").datepicker({"dateFormat":"yy-mm-dd"});
+	});
 	$(".tabs").on("click","li a",function(){
     $(this).addClass("active").parents().siblings().children(".active").removeClass("active");
     var href=$(this).attr("href");

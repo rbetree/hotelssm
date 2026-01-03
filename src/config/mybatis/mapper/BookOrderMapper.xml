@@ -26,12 +26,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="roomTypeId != null">
 			and roomTypeId = #{roomTypeId}  
 		</if>
+		<if test="arriveDateStart != null">
+			and arriveDate &gt;= #{arriveDateStart}
+		</if>
+		<if test="leaveDateEnd != null">
+			and leaveDate &lt;= #{leaveDateEnd}
+		</if>
 		<if test="idCard != null">
 			and idCard like '%${idCard}%' 
 		</if>
 		<if test="mobile != null">
 			and mobile like '%${mobile}%' 
 		</if>
+		order by id desc
 		<if test="offset != null and pageSize != null">
 			limit #{offset},#{pageSize}
 		</if>
@@ -54,6 +61,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 		<if test="roomTypeId != null">
 			and roomTypeId = #{roomTypeId}  
+		</if>
+		<if test="arriveDateStart != null">
+			and arriveDate &gt;= #{arriveDateStart}
+		</if>
+		<if test="leaveDateEnd != null">
+			and leaveDate &lt;= #{leaveDateEnd}
 		</if>
 		<if test="idCard != null">
 			and idCard like '%${idCard}%' 

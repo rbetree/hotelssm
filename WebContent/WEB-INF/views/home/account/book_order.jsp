@@ -59,6 +59,9 @@
                 </li>
                 <li>
                     <h3>入住信息</h3>
+					<div style="color:#666;margin:8px 0;font-size:12px;line-height:20px;">
+						提示：未登录也可以直接预订；提交订单时系统会以手机号为用户名自动创建账号（初始密码为身份证后6位），方便在“我的订单”中取消/修改。
+					</div>
 
                     <div class="info_group">
                         <label>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label><input type="text" name="name" id="name" value="${account.name}"/><span class="msg"></span>

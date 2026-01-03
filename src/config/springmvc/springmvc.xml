@@ -58,6 +58,8 @@
 		<!-- 前台访问拦截器 -->
 		<mvc:interceptor>
 			<mvc:mapping path="/home/account/**"/>
+			<!-- 游客可预订：放开预订页与提交接口，不强制登录 -->
+			<mvc:exclude-mapping path="/home/account/book_order"/>
 			<bean class="com.ischoolbar.programmer.interceptor.home.LoginInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
