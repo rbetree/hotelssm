@@ -28,7 +28,7 @@
 <div id="section" class="edit-wrap">
     <h2>修改预定订单</h2>
     <div class="hint">
-        提示：仅“预定中”的订单支持修改；若更换房型，需该房型仍有可用房间。
+        提示：仅“待确认/已确认”的订单支持修改；已确认订单修改后会重新回到“待确认”，需要员工再次确认。
     </div>
     <form id="edit_order_form">
         <input type="hidden" name="id" value="${bookOrder.id}">

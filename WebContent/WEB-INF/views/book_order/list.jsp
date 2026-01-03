@@ -6,6 +6,8 @@
     <div id="wu-toolbar">
         <div class="wu-toolbar-button">
             <%@include file="../common/menus.jsp"%>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="confirmOrder()" plain="true">确认订单</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancelOrder()" plain="true">取消订单</a>
         </div>
         <div class="wu-toolbar-search">
             <label>预定姓名:</label><input id="search-name" class="wu-text" style="width:100px">
@@ -28,9 +30,11 @@
             <label>状态:</label>
             <select id="search-status" class="easyui-combobox" panelHeight="auto" style="width:120px">
             	<option value="-1">全部</option>
-            	<option value="0">预定中</option>
-            	<option value="1">已入住</option>
-            	<option value="2">已结算离店</option>
+            	<option value="0">待确认</option>
+            	<option value="1">已确认</option>
+            	<option value="2">已入住</option>
+            	<option value="3">已完成</option>
+            	<option value="4">已取消</option>
             </select>
             <a href="#" id="search-btn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
         </div>
@@ -84,14 +88,13 @@
             </tr>
             <tr>
                 <td align="right">状态:</td>
-                <td>
-	                <select id="add-status" name="status" class="easyui-combobox" panelHeight="auto" style="width:268px" data-options="required:true, missingMessage:'请选择状态'">
-		            	<option value="0">预定中</option>
-		            	<option value="1">已入住</option>
-		            	<option value="2">已结算离店</option>
-	            	</select>	
-                </td>
-            </tr>
+	                <td>
+		                <select id="add-status" name="status" class="easyui-combobox" panelHeight="auto" style="width:268px" data-options="required:true, missingMessage:'请选择状态'">
+			            	<option value="0">待确认</option>
+			            	<option value="1">已确认</option>
+		            	</select>	
+	                </td>
+	            </tr>
             <tr>
                 <td align="right">备注:</td>
                 <td><textarea id="add-remark" name="remark" rows="6" class="wu-textarea" style="width:260px"></textarea></td>
@@ -146,14 +149,16 @@
             </tr>
             <tr>
                 <td align="right">状态:</td>
-                <td>
-	                <select id="edit-status" name="status" class="easyui-combobox" panelHeight="auto" style="width:268px" data-options="required:true, missingMessage:'请选择状态'">
-		            	<option value="0">预定中</option>
-		            	<option value="1">已入住</option>
-		            	<option value="2">已结算离店</option>
-	            	</select>	
-                </td>
-            </tr>
+	                <td>
+		                <select id="edit-status" name="status" class="easyui-combobox" panelHeight="auto" style="width:268px" data-options="required:true, missingMessage:'请选择状态'">
+			            	<option value="0">待确认</option>
+			            	<option value="1">已确认</option>
+			            	<option value="2">已入住</option>
+			            	<option value="3">已完成</option>
+			            	<option value="4">已取消</option>
+		            	</select>	
+	                </td>
+	            </tr>
             <tr>
                 <td align="right">备注:</td>
                 <td><textarea id="edit-remark" name="remark" rows="6" class="wu-textarea" style="width:260px"></textarea></td>
@@ -256,6 +261,62 @@
 	}
 	
 	/**
+	* 确认订单（待确认 -> 已确认）
+	*/
+	function confirmOrder(){
+		var item = $('#data-datagrid').datagrid('getSelected');
+		if(item == null || item.length == 0){
+			$.messager.alert('信息提示','请选择要确认的数据！','info');
+			return;
+		}
+		$.messager.confirm('信息提示','确定要确认该订单？', function(result){
+			if(!result) return;
+			$.ajax({
+				url:'confirm',
+				dataType:'json',
+				type:'post',
+				data:{id:item.id},
+				success:function(data){
+					if(data.type == 'success'){
+						$.messager.alert('信息提示','确认成功！','info');
+						$('#data-datagrid').datagrid('reload');
+					}else{
+						$.messager.alert('信息提示',data.msg,'warning');
+					}
+				}
+			});
+		});
+	}
+	
+	/**
+	* 取消订单（待确认/已确认 -> 已取消）
+	*/
+	function cancelOrder(){
+		var item = $('#data-datagrid').datagrid('getSelected');
+		if(item == null || item.length == 0){
+			$.messager.alert('信息提示','请选择要取消的数据！','info');
+			return;
+		}
+		$.messager.confirm('信息提示','确定要取消该订单？', function(result){
+			if(!result) return;
+			$.ajax({
+				url:'cancel',
+				dataType:'json',
+				type:'post',
+				data:{id:item.id},
+				success:function(data){
+					if(data.type == 'success'){
+						$.messager.alert('信息提示','取消成功！','info');
+						$('#data-datagrid').datagrid('reload');
+					}else{
+						$.messager.alert('信息提示',data.msg,'warning');
+					}
+				}
+			});
+		});
+	}
+	
+	/**
 	* Name 打开编辑窗口
 	*/
 	function openEdit(){
@@ -268,7 +329,7 @@
 		$('#edit-dialog').dialog({
 			closed: false,
 			modal:true,
-            title: "编辑客户信息",
+	        title: "编辑客户信息",
             buttons: [{
                 text: '确定',
                 iconCls: 'icon-ok',
@@ -304,7 +365,7 @@
 		$('#add-dialog').dialog({
 			closed: false,
 			modal:true,
-            title: "添加客户信息",
+	        title: "添加客户信息",
             buttons: [{
                 text: '确定',
                 iconCls: 'icon-ok',
@@ -414,20 +475,26 @@
 			{ field:'mobile',title:'手机号',width:100,sortable:true},
 			{ field:'arriveDate',title:'入住日期',width:100,sortable:true},
 			{ field:'leaveDate',title:'离店日期',width:100,sortable:true},
-			{ field:'status',title:'状态',width:100,formatter:function(value,row,index){
-				switch(value){
-					case 0:{
-						return '预定中';
+				{ field:'status',title:'状态',width:100,formatter:function(value,row,index){
+					switch(value){
+						case 0:{
+							return '待确认';
+						}
+						case 1:{
+							return '已确认';
+						}
+						case 2:{
+							return '已入住';
+						}
+						case 3:{
+							return '已完成';
+						}
+						case 4:{
+							return '已取消';
+						}
 					}
-					case 1:{
-						return '已入住';
-					}
-					case 2:{
-						return '已结算离店';
-					}
-				}
-				return value;
-			}},
+					return value;
+				}},
 			{ field:'createTime',title:'预定时间',width:150,formatter:function(value,row,index){
 				return format(value);
 			}},

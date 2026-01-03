@@ -15,13 +15,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ischoolbar.programmer.entity.BookOrder;
 import com.ischoolbar.programmer.entity.RoomType;
+import com.ischoolbar.programmer.entity.admin.User;
 import com.ischoolbar.programmer.page.admin.Page;
 import com.ischoolbar.programmer.service.AccountService;
 import com.ischoolbar.programmer.service.BookOrderService;
 import com.ischoolbar.programmer.service.RoomTypeService;
+import com.ischoolbar.programmer.service.admin.LogService;
 
 /**
- * Ô¤¶¨¶©µ¥¹ÜÀíºóÌ¨¿ØÖÆÆ÷
+ * é¢„å®šè®¢å•ç®¡ç†åå°æ§åˆ¶å™¨
  * @author ymj
  *
  */
@@ -35,10 +37,12 @@ public class BookOrderController {
 	private RoomTypeService roomTypeService;
 	@Autowired
 	private BookOrderService bookOrderService;
+	@Autowired
+	private LogService logService;
 	
 	
 	/**
-	 * Ô¤¶¨¶©µ¥¹ÜÀíÁĞ±íÒ³Ãæ
+	 * é¢„å®šè®¢å•ç®¡ç†åˆ—è¡¨é¡µé¢
 	 * @param model
 	 * @return
 	 */
@@ -51,7 +55,7 @@ public class BookOrderController {
 	}
 	
 	/**
-	 * Ô¤¶¨¶©µ¥ĞÅÏ¢Ìí¼Ó²Ù×÷
+	 * é¢„å®šè®¢å•ä¿¡æ¯æ·»åŠ æ“ä½œ
 	 * @param bookOrder
 	 * @return
 	 */
@@ -61,69 +65,69 @@ public class BookOrderController {
 		Map<String, String> ret = new HashMap<String, String>();
 		if(bookOrder == null){
 			ret.put("type", "error");
-			ret.put("msg", "ÇëÌîĞ´ÕıÈ·µÄÔ¤¶¨¶©µ¥ĞÅÏ¢!");
+			ret.put("msg", "è¯·å¡«å†™æ­£ç¡®çš„é¢„å®šè®¢å•ä¿¡æ¯!");
 			return ret;
 		}
 		if(bookOrder.getAccountId() == null){
 			ret.put("type", "error");
-			ret.put("msg", "¿Í»§²»ÄÜÎª¿Õ!");
+			ret.put("msg", "å®¢æˆ·ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(bookOrder.getRoomTypeId() == null){
 			ret.put("type", "error");
-			ret.put("msg", "·¿ĞÍ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "æˆ¿å‹ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getName())){
 			ret.put("type", "error");
-			ret.put("msg", "Ô¤¶¨¶©µ¥ÁªÏµÈËÃû³Æ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "é¢„å®šè®¢å•è”ç³»äººåç§°ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getMobile())){
 			ret.put("type", "error");
-			ret.put("msg", "Ô¤¶¨¶©µ¥ÁªÏµÈËÊÖ»úºÅ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "é¢„å®šè®¢å•è”ç³»äººæ‰‹æœºå·ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getIdCard())){
 			ret.put("type", "error");
-			ret.put("msg", "ÁªÏµÈËÉí·İÖ¤ºÅ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "è”ç³»äººèº«ä»½è¯å·ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getArriveDate())){
 			ret.put("type", "error");
-			ret.put("msg", "µ½´ïÊ±¼ä²»ÄÜÎª¿Õ!");
+			ret.put("msg", "åˆ°è¾¾æ—¶é—´ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getLeaveDate())){
 			ret.put("type", "error");
-			ret.put("msg", "ÀëµêÊ±¼ä²»ÄÜÎª¿Õ!");
+			ret.put("msg", "ç¦»åº—æ—¶é—´ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		bookOrder.setCreateTime(new Date());
 		if(bookOrderService.add(bookOrder) <= 0){
 			ret.put("type", "error");
-			ret.put("msg", "Ìí¼ÓÊ§°Ü£¬ÇëÁªÏµ¹ÜÀíÔ±!");
+			ret.put("msg", "æ·»åŠ å¤±è´¥ï¼Œè¯·è”ç³»ç®¡ç†å‘˜!");
 			return ret;
 		}
 		RoomType roomType = roomTypeService.find(bookOrder.getRoomTypeId());
-		//Ô¤¶¨³É¹¦ºóÈ¥ĞŞ¸Ä¸Ã·¿ĞÍµÄÔ¤¶¨Êı
+		//é¢„å®šæˆåŠŸåå»ä¿®æ”¹è¯¥æˆ¿å‹çš„é¢„å®šæ•°
 		if(roomType != null){
 			roomType.setBookNum(roomType.getBookNum() + 1);
 			roomType.setAvilableNum(roomType.getAvilableNum() - 1);
 			roomTypeService.updateNum(roomType);
-			//Èç¹û¿ÉÓÃµÄ·¿¼äÊıÎª0£¬ÔòÉèÖÃ¸Ã·¿ĞÍ×´Ì¬ÒÑÂú
+			//å¦‚æœå¯ç”¨çš„æˆ¿é—´æ•°ä¸º0ï¼Œåˆ™è®¾ç½®è¯¥æˆ¿å‹çŠ¶æ€å·²æ»¡
 			if(roomType.getAvilableNum() == 0){
 				roomType.setStatus(0);
 				roomTypeService.edit(roomType);
 			}
 		}
 		ret.put("type", "success");
-		ret.put("msg", "Ìí¼Ó³É¹¦!");
+		ret.put("msg", "æ·»åŠ æˆåŠŸ!");
 		return ret;
 	}
 	
 	/**
-	 * Ô¤¶¨¶©µ¥ĞÅÏ¢±à¼­²Ù×÷
+	 * é¢„å®šè®¢å•ä¿¡æ¯ç¼–è¾‘æ“ä½œ
 	 * @param account
 	 * @return
 	 */
@@ -133,89 +137,233 @@ public class BookOrderController {
 		Map<String, String> ret = new HashMap<String, String>();
 		if(bookOrder == null){
 			ret.put("type", "error");
-			ret.put("msg", "ÇëÌîĞ´ÕıÈ·µÄÔ¤¶¨¶©µ¥ĞÅÏ¢!");
+			ret.put("msg", "è¯·å¡«å†™æ­£ç¡®çš„é¢„å®šè®¢å•ä¿¡æ¯!");
 			return ret;
 		}
 		if(bookOrder.getAccountId() == null){
 			ret.put("type", "error");
-			ret.put("msg", "¿Í»§²»ÄÜÎª¿Õ!");
+			ret.put("msg", "å®¢æˆ·ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(bookOrder.getRoomTypeId() == null){
 			ret.put("type", "error");
-			ret.put("msg", "·¿ĞÍ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "æˆ¿å‹ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getName())){
 			ret.put("type", "error");
-			ret.put("msg", "Ô¤¶¨¶©µ¥ÁªÏµÈËÃû³Æ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "é¢„å®šè®¢å•è”ç³»äººåç§°ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getMobile())){
 			ret.put("type", "error");
-			ret.put("msg", "Ô¤¶¨¶©µ¥ÁªÏµÈËÊÖ»úºÅ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "é¢„å®šè®¢å•è”ç³»äººæ‰‹æœºå·ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getIdCard())){
 			ret.put("type", "error");
-			ret.put("msg", "ÁªÏµÈËÉí·İÖ¤ºÅ²»ÄÜÎª¿Õ!");
+			ret.put("msg", "è”ç³»äººèº«ä»½è¯å·ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getArriveDate())){
 			ret.put("type", "error");
-			ret.put("msg", "µ½´ïÊ±¼ä²»ÄÜÎª¿Õ!");
+			ret.put("msg", "åˆ°è¾¾æ—¶é—´ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		if(StringUtils.isEmpty(bookOrder.getLeaveDate())){
 			ret.put("type", "error");
-			ret.put("msg", "ÀëµêÊ±¼ä²»ÄÜÎª¿Õ!");
+			ret.put("msg", "ç¦»åº—æ—¶é—´ä¸èƒ½ä¸ºç©º!");
 			return ret;
 		}
 		BookOrder existBookOrder = bookOrderService.find(bookOrder.getId());
 		if(existBookOrder == null){
 			ret.put("type", "error");
-			ret.put("msg", "ÇëÑ¡ÔñÕıÈ·µÄÊı¾İ½øĞĞ±à¼­!");
+			ret.put("msg", "è¯·é€‰æ‹©æ­£ç¡®çš„æ•°æ®è¿›è¡Œç¼–è¾‘!");
+			return ret;
+		}
+		// å·²å…¥ä½/å·²å®Œæˆè®¢å•ä¸å…è®¸ä¿®æ”¹ï¼Œé¿å…ä¸å…¥ä½/é€€æˆ¿è”åŠ¨äº§ç”Ÿä¸ä¸€è‡´
+		if(existBookOrder.getStatus() == 2 || existBookOrder.getStatus() == 3){
+			ret.put("type", "error");
+			ret.put("msg", "å·²å…¥ä½æˆ–å·²å®Œæˆçš„è®¢å•ä¸å…è®¸ä¿®æ”¹!");
 			return ret;
 		}
 		if(bookOrderService.edit(bookOrder) <= 0){
 			ret.put("type", "error");
-			ret.put("msg", "±à¼­Ê§°Ü£¬ÇëÁªÏµ¹ÜÀíÔ±!");
+			ret.put("msg", "ç¼–è¾‘å¤±è´¥ï¼Œè¯·è”ç³»ç®¡ç†å‘˜!");
 			return ret;
 		}
-		//ÅĞ¶Ï·¿ĞÍÊÇ·ñ·¢Éú±ä»¯
+		//åˆ¤æ–­æˆ¿å‹æ˜¯å¦å‘ç”Ÿå˜åŒ–
 		if(existBookOrder.getRoomTypeId().longValue() != bookOrder.getRoomTypeId().longValue()){
-			//·¿ĞÍ·¢ÉúÁË±ä»¯
-			//Ê×ÏÈ»Ö¸´Ô­À´·¿ĞÍµÄÔ¤¶¨Êı¼°¿ÉÓÃÊı
+			//æˆ¿å‹å‘ç”Ÿäº†å˜åŒ–
+			//é¦–å…ˆæ¢å¤åŸæ¥æˆ¿å‹çš„é¢„å®šæ•°åŠå¯ç”¨æ•°
 			RoomType oldRoomType = roomTypeService.find(existBookOrder.getRoomTypeId());
 			oldRoomType.setAvilableNum(oldRoomType.getAvilableNum() + 1);
 			oldRoomType.setBookNum(oldRoomType.getBookNum() - 1);
 			roomTypeService.updateNum(oldRoomType);
 			if(oldRoomType.getStatus() == 0){
-				//¾ÉµÄ·¿¼äÔ­À´ÊÇÂú·¿£¬ÏÖÔÚ²»Âú·¿µÄ»°£¬»Ö¸´×´Ì¬
+				//æ—§çš„æˆ¿é—´åŸæ¥æ˜¯æ»¡æˆ¿ï¼Œç°åœ¨ä¸æ»¡æˆ¿çš„è¯ï¼Œæ¢å¤çŠ¶æ€
 				if(oldRoomType.getAvilableNum() > 0){
-					//ÉèÖÃ³É×´Ì¬¿ÉÓÃ
+					//è®¾ç½®æˆçŠ¶æ€å¯ç”¨
 					oldRoomType.setStatus(1);
 					roomTypeService.edit(oldRoomType);
 				}
 			}
-			//ĞŞ¸ÄĞÂµÄ·¿ĞÍµÄ¿ÉÓÃÊıºÍÔ¤¶¨Êı
+			//ä¿®æ”¹æ–°çš„æˆ¿å‹çš„å¯ç”¨æ•°å’Œé¢„å®šæ•°
 			RoomType newRoomType = roomTypeService.find(bookOrder.getRoomTypeId());
 			newRoomType.setAvilableNum(newRoomType.getAvilableNum() - 1);
 			newRoomType.setBookNum(newRoomType.getBookNum() + 1);
 			roomTypeService.updateNum(newRoomType);
 			if(newRoomType.getAvilableNum() <= 0){
-				//Ã»ÓĞ¿ÉÓÃ·¿¼äÊı
-				newRoomType.setStatus(0);//ÉèÖÃ³ÉÂú·¿
+				//æ²¡æœ‰å¯ç”¨æˆ¿é—´æ•°
+				newRoomType.setStatus(0);//è®¾ç½®æˆæ»¡æˆ¿
 				roomTypeService.edit(newRoomType);
 			}
 		}
 		ret.put("type", "success");
-		ret.put("msg", "ĞŞ¸Ä³É¹¦!");
+		ret.put("msg", "ä¿®æ”¹æˆåŠŸ!");
+		return ret;
+	}
+
+	/**
+	 * ç¡®è®¤è®¢å•ï¼ˆå¾…ç¡®è®¤ -> å·²ç¡®è®¤ï¼‰
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/confirm",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> confirm(Long id, javax.servlet.http.HttpServletRequest request){
+		Map<String, String> ret = new HashMap<String, String>();
+		if(id == null){
+			ret.put("type", "error");
+			ret.put("msg", "è¯·é€‰æ‹©è¦ç¡®è®¤çš„è®¢å•!");
+			return ret;
+		}
+		BookOrder bookOrder = bookOrderService.find(id);
+		if(bookOrder == null){
+			ret.put("type", "error");
+			ret.put("msg", "è®¢å•ä¸å­˜åœ¨!");
+			return ret;
+		}
+		if(bookOrder.getStatus() != 0){
+			ret.put("type", "error");
+			ret.put("msg", "åªæœ‰å¾…ç¡®è®¤è®¢å•æ‰èƒ½ç¡®è®¤!");
+			return ret;
+		}
+		bookOrder.setStatus(1);
+		if(bookOrderService.edit(bookOrder) <= 0){
+			ret.put("type", "error");
+			ret.put("msg", "ç¡®è®¤å¤±è´¥ï¼Œè¯·è”ç³»ç®¡ç†å‘˜!");
+			return ret;
+		}
+		User admin = (User)request.getSession().getAttribute("admin");
+		if(admin != null){
+			logService.add("ç”¨æˆ·åä¸º{"+admin.getUsername()+"}çš„å‘˜å·¥ç¡®è®¤äº†é¢„å®šè®¢å•{"+id+"}!");
+		}
+		ret.put("type", "success");
+		ret.put("msg", "ç¡®è®¤æˆåŠŸ!");
+		return ret;
+	}
+
+	/**
+	 * å–æ¶ˆè®¢å•ï¼ˆå¾…ç¡®è®¤/å·²ç¡®è®¤ -> å·²å–æ¶ˆï¼‰
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/cancel",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> cancel(Long id, javax.servlet.http.HttpServletRequest request){
+		Map<String, String> ret = new HashMap<String, String>();
+		if(id == null){
+			ret.put("type", "error");
+			ret.put("msg", "è¯·é€‰æ‹©è¦å–æ¶ˆçš„è®¢å•!");
+			return ret;
+		}
+		BookOrder bookOrder = bookOrderService.find(id);
+		if(bookOrder == null){
+			ret.put("type", "error");
+			ret.put("msg", "è®¢å•ä¸å­˜åœ¨!");
+			return ret;
+		}
+		if(bookOrder.getStatus() != 0 && bookOrder.getStatus() != 1){
+			ret.put("type", "error");
+			ret.put("msg", "å½“å‰è®¢å•çŠ¶æ€ä¸å…è®¸å–æ¶ˆ!");
+			return ret;
+		}
+		bookOrder.setStatus(4);
+		if(bookOrderService.edit(bookOrder) <= 0){
+			ret.put("type", "error");
+			ret.put("msg", "å–æ¶ˆå¤±è´¥ï¼Œè¯·è”ç³»ç®¡ç†å‘˜!");
+			return ret;
+		}
+		RoomType roomType = roomTypeService.find(bookOrder.getRoomTypeId());
+		if(roomType != null){
+			//æ¢å¤æˆ¿å‹çš„é¢„å®šæ•°ä¸å¯ç”¨æ•°
+			if(roomType.getBookNum() != null && roomType.getBookNum() > 0){
+				roomType.setBookNum(roomType.getBookNum() - 1);
+			}
+			if(roomType.getAvilableNum() != null){
+				roomType.setAvilableNum(roomType.getAvilableNum() + 1);
+			}
+			roomTypeService.updateNum(roomType);
+			//åŸæ¥æ˜¯æ»¡æˆ¿ï¼Œç°åœ¨æ¢å¤å¯ç”¨
+			if(roomType.getStatus() == 0 && roomType.getAvilableNum() != null && roomType.getAvilableNum() > 0){
+				roomType.setStatus(1);
+				roomTypeService.edit(roomType);
+			}
+		}
+		User admin = (User)request.getSession().getAttribute("admin");
+		if(admin != null){
+			logService.add("ç”¨æˆ·åä¸º{"+admin.getUsername()+"}çš„å‘˜å·¥å–æ¶ˆäº†é¢„å®šè®¢å•{"+id+"}!");
+		}
+		ret.put("type", "success");
+		ret.put("msg", "å–æ¶ˆæˆåŠŸ!");
+		return ret;
+	}
+
+	/**
+	 * åˆ é™¤è®¢å•ï¼ˆä»…å…è®¸åˆ é™¤å·²å–æ¶ˆè®¢å•ï¼Œé¿å…æ•°é‡è”åŠ¨é‡å¤å›æ»šï¼‰
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/delete",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> delete(Long id, javax.servlet.http.HttpServletRequest request){
+		Map<String, String> ret = new HashMap<String, String>();
+		if(id == null){
+			ret.put("type", "error");
+			ret.put("msg", "è¯·é€‰æ‹©è¦åˆ é™¤çš„è®¢å•!");
+			return ret;
+		}
+		BookOrder bookOrder = bookOrderService.find(id);
+		if(bookOrder == null){
+			ret.put("type", "error");
+			ret.put("msg", "è®¢å•ä¸å­˜åœ¨!");
+			return ret;
+		}
+		if(bookOrder.getStatus() != 4){
+			ret.put("type", "error");
+			ret.put("msg", "ä»…å…è®¸åˆ é™¤å·²å–æ¶ˆè®¢å•ï¼Œè¯·å…ˆå–æ¶ˆè®¢å•å†åˆ é™¤!");
+			return ret;
+		}
+		if(bookOrderService.delete(id) <= 0){
+			ret.put("type", "error");
+			ret.put("msg", "åˆ é™¤å¤±è´¥ï¼Œè¯·è”ç³»ç®¡ç†å‘˜!");
+			return ret;
+		}
+		User admin = (User)request.getSession().getAttribute("admin");
+		if(admin != null){
+			logService.add("ç”¨æˆ·åä¸º{"+admin.getUsername()+"}çš„å‘˜å·¥åˆ é™¤äº†é¢„å®šè®¢å•{"+id+"}!");
+		}
+		ret.put("type", "success");
+		ret.put("msg", "åˆ é™¤æˆåŠŸ!");
 		return ret;
 	}
 	
 	/**
-	 * ·ÖÒ³²éÑ¯Ô¤¶¨¶©µ¥ĞÅÏ¢
+	 * åˆ†é¡µæŸ¥è¯¢é¢„å®šè®¢å•ä¿¡æ¯
 	 * @param name
 	 * @param page
 	 * @return

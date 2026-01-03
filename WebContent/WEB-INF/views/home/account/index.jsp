@@ -198,10 +198,11 @@
 			  <label>状态:</label>
 			  <select name="status" id="search-status" class="form-control" style="width:120px;display:inline-block;">
 				  <option value="-1" <c:if test="${status == -1}">selected</c:if>>全部</option>
-				  <option value="0" <c:if test="${status == 0}">selected</c:if>>预定中</option>
-				  <option value="1" <c:if test="${status == 1}">selected</c:if>>已入住</option>
-				  <option value="2" <c:if test="${status == 2}">selected</c:if>>已结算离店</option>
-				  <option value="3" <c:if test="${status == 3}">selected</c:if>>已取消</option>
+				  <option value="0" <c:if test="${status == 0}">selected</c:if>>待确认</option>
+				  <option value="1" <c:if test="${status == 1}">selected</c:if>>已确认</option>
+				  <option value="2" <c:if test="${status == 2}">selected</c:if>>已入住</option>
+				  <option value="3" <c:if test="${status == 3}">selected</c:if>>已完成</option>
+				  <option value="4" <c:if test="${status == 4}">selected</c:if>>已取消</option>
 			  </select>
 			  <label style="margin-left:8px;">房型:</label>
 			  <select name="roomTypeId" id="search-roomType" class="form-control" style="width:180px;display:inline-block;">
@@ -248,33 +249,36 @@
 					<td>${bookOrder.mobile }</td>
 					<td>${bookOrder.idCard }</td>
 					<td>${bookOrder.arriveDate }</td>
-					<td>${bookOrder.leaveDate }</td>
-					<td>
-						<c:if test="${bookOrder.status == 0 }">
-			          		<font color="red">预定中</font>
-			          	</c:if>
-			          	<c:if test="${bookOrder.status == 1 }">
-			          		已入住
-			          	</c:if>
-			          	<c:if test="${bookOrder.status == 2 }">
-			          		已结算离店
-			          	</c:if>
-						<c:if test="${bookOrder.status == 3 }">
-			          		<font color="#999">已取消</font>
-			          	</c:if>
-					</td>
-					<td><fmt:formatDate value="${bookOrder.createTime }" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-					<td>${bookOrder.remark }</td>
-					<td>
-						<c:if test="${bookOrder.status == 0 }">
-							<button type="button" class="btn" style="background:#d9534f;border-color:#d43f3a;color:#fff;" onclick="cancelBookOrder(${bookOrder.id})">取消</button>
-							<button type="button" class="btn btn-success" onclick="window.location.href='edit_book_order?id=${bookOrder.id}'">修改</button>
-						</c:if>
-						<c:if test="${bookOrder.status != 0 }">
-							-
-						</c:if>
-					</td>
-               </tr>
+						<td>${bookOrder.leaveDate }</td>
+						<td>
+							<c:if test="${bookOrder.status == 0 }">
+				          		<font color="red">待确认</font>
+				          	</c:if>
+				          	<c:if test="${bookOrder.status == 1 }">
+				          		<font color="#f59e0b">已确认</font>
+				          	</c:if>
+				          	<c:if test="${bookOrder.status == 2 }">
+				          		已入住
+				          	</c:if>
+				          	<c:if test="${bookOrder.status == 3 }">
+				          		已完成
+				          	</c:if>
+							<c:if test="${bookOrder.status == 4 }">
+				          		<font color="#999">已取消</font>
+				          	</c:if>
+						</td>
+						<td><fmt:formatDate value="${bookOrder.createTime }" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+						<td>${bookOrder.remark }</td>
+						<td>
+							<c:if test="${bookOrder.status == 0 || bookOrder.status == 1 }">
+								<button type="button" class="btn" style="background:#d9534f;border-color:#d43f3a;color:#fff;" onclick="cancelBookOrder(${bookOrder.id})">取消</button>
+								<button type="button" class="btn btn-success" onclick="window.location.href='edit_book_order?id=${bookOrder.id}'">修改</button>
+							</c:if>
+							<c:if test="${bookOrder.status != 0 && bookOrder.status != 1 }">
+								-
+							</c:if>
+						</td>
+	               </tr>
                </c:forEach>
             </tbody>
           </table>
