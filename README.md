@@ -30,6 +30,41 @@
    - 前台入口：`/home/index`
    - 后台入口：`/system/login`
 
+## 命令行跑通（无 IDE，可选）
+
+> 说明：本项目原始结构为传统 Web 工程（非 Maven）。仓库已补充 `pom.xml`，方便在命令行直接构建与用 Jetty 启动。
+> Java 源码文件为 **GBK** 编码，`pom.xml` 已按 GBK 配置编译编码。
+
+1. 启动 MySQL（推荐 Docker）：
+
+```bash
+docker rm -f hotelssm-mysql >/dev/null 2>&1 || true
+
+docker run --name hotelssm-mysql \
+  -e MYSQL_ROOT_PASSWORD=123456 \
+  -e MYSQL_DATABASE=db_hotel_ssm \
+  -p 3306:3306 \
+  -d mysql:5.7 \
+  --character-set-server=utf8 --collation-server=utf8_general_ci
+```
+
+然后导入脚本（显式指定 UTF-8，避免中文数据“å…”乱码）：
+
+```bash
+docker exec -i hotelssm-mysql mysql --default-character-set=utf8 -uroot -p123456 db_hotel_ssm < db_hotel_ssm.sql
+```
+
+2. 构建并启动：
+
+```bash
+mvn -DskipTests package
+mvn -DskipTests jetty:run
+```
+
+3. 访问：
+   - 前台：`http://localhost:8080/home/index`
+   - 后台：`http://localhost:8080/system/login`
+
 详细步骤见：`docs/运行与部署指南.md`
 
 ## 文档入口
