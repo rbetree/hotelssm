@@ -3,7 +3,18 @@
     "allow": [
       "Bash(find:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(docker logs:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(iconv:*)",
+      "Bash(git checkout:*)",
+      "Bash(export:*)",
+      "Bash(/mnt/d/CODE/hotelssm/.tools/apache-maven-3.9.6/bin/mvn clean compile:*)",
+      "Bash(./scripts/dev-stop.sh:*)",
+      "Bash(pkill:*)",
+      "Bash(bash:*)",
+      "Bash(/mnt/d/CODE/hotelssm/.tools/apache-maven-3.9.6/bin/mvn clean package:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

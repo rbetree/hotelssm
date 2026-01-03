@@ -13,8 +13,8 @@
     <description>酒店服务管理系统（SSM，传统 Web 工程结构）</description>
 
     <properties>
-        <!-- 现有 Java 源码为 GBK 编码（否则会出现 unmappable character 编译错误） -->
-        <project.build.sourceEncoding>GBK</project.build.sourceEncoding>
+        <!-- 现有 Java 源码为 UTF-8 编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- 让 jetty:run 使用传统 Web 根目录 -->
