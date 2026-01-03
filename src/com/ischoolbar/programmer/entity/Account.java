@@ -3,20 +3,21 @@ package com.ischoolbar.programmer.entity;
 import org.springframework.stereotype.Component;
 
 /**
- * ¿Í»§ÊµÌåÀà
+ * ï¿½Í»ï¿½Êµï¿½ï¿½ï¿½ï¿½
  * @author ymj
  *
  */
 @Component
 public class Account {
-	private Long id;//¿Í»§id
-	private String name;//¿Í»§µÇÂ¼Ãû
-	private String password;//¿Í»§µÇÂ¼ÃÜÂë
-	private String realName;//ÕæÊµĞÕÃû
-	private String idCard;//Éí·İÖ¤ºÅÂë
-	private String mobile;//ÊÖ»úºÅ
-	private String address;//ÁªÏµµØÖ·
-	private int status;//×´Ì¬£º0£º¿ÉÓÃ£¬-1£º¶³½á
+	private Long id;//ï¿½Í»ï¿½id
+	private String name;//ï¿½Í»ï¿½ï¿½ï¿½Â¼ï¿½ï¿½
+	private String password;//ï¿½Í»ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½
+	private String realName;//ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½
+	private String idCard;//ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+	private String mobile;//ï¿½Ö»ï¿½ï¿½ï¿½
+	private String address;//ï¿½ï¿½Ïµï¿½ï¿½Ö·
+	private int status;//×´Ì¬ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½-1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	private int level;//ä¼šå‘˜ç­‰çº§ï¼š1=æ™®é€šä¼šå‘˜(ä¹æŠ˜)ï¼Œ2=é«˜çº§ä¼šå‘˜(å…«æŠ˜)
 	public Long getId() {
 		return id;
 	}
@@ -65,7 +66,13 @@ public class Account {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	
-	
-	
+	public int getLevel() {
+		return level;
+	}
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+
+
 }

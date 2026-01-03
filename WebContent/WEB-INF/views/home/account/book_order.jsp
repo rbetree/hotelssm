@@ -52,11 +52,31 @@
                         <label>入住时间</label><input type="text" name="arriveDate" id="arriveDate" class="datepicker"/>
 						<label>离店时间</label><input type="text" name="leaveDate" id="leaveDate" class="datepicker"/>
                     </div>
-                    
+
                     <div class="info_group">
-                        <label>房费总计</label><span class="total">￥${roomType.price }</span>
-                        <input type="hidden" value="0"/>
+                        <label>房型价格</label><span class="price">￥${roomType.price }</span>
                     </div>
+                    <c:if test="${not empty account}">
+                    <div class="info_group">
+                        <label>会员等级</label><span class="level">
+                        	<c:if test="${account.level == 1}">普通会员（九折优惠）</c:if>
+                        	<c:if test="${account.level == 2}">高级会员（八折优惠）</c:if>
+                        	<c:if test="${account.level != 1 && account.level != 2}">普通会员</c:if>
+                        </span>
+                    </div>
+                    <div class="info_group">
+                        <label>折扣价格</label><span class="discount-price" style="color:#f00;font-weight:bold;">
+                        	<c:if test="${account.level == 1}">￥${roomType.price * 0.9}</c:if>
+                        	<c:if test="${account.level == 2}">￥${roomType.price * 0.8}</c:if>
+                        	<c:if test="${account.level != 1 && account.level != 2}">￥${roomType.price}</c:if>
+                        </span>
+                    </div>
+                    </c:if>
+                    <c:if test="${empty account}">
+                    <div class="info_group">
+                        <label>会员折扣</label><span style="color:#999;">登录后享受会员折扣</span>
+                    </div>
+                    </c:if>
                 </li>
                 <li>
                     <h3>入住信息</h3>

@@ -475,6 +475,12 @@
 			{ field:'mobile',title:'手机号',width:100,sortable:true},
 			{ field:'arriveDate',title:'入住日期',width:100,sortable:true},
 			{ field:'leaveDate',title:'离店日期',width:100,sortable:true},
+			{ field:'actualPrice',title:'实付价格',width:80,formatter:function(value,row,index){
+				if(value != null && value > 0){
+					return '￥' + value.toFixed(2);
+				}
+				return '-';
+			}},
 				{ field:'status',title:'状态',width:100,formatter:function(value,row,index){
 					switch(value){
 						case 0:{

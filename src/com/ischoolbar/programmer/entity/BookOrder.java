@@ -20,6 +20,9 @@ public class BookOrder {
 	private int status;//状态：0：待确认，1：已确认，2：已入住，3：已完成，4：已取消
 	private String arriveDate;//入住日期
 	private String leaveDate;//离店日期
+	private Double originalPrice;//原价（房型价格）
+	private Double discount;//折扣率（0.9=九折，0.8=八折）
+	private Double actualPrice;//实付价格
 	private Date createTime;//预定日期
 	private String remark;
 	public Long getId() {
@@ -88,7 +91,25 @@ public class BookOrder {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
-	
-	
+	public Double getOriginalPrice() {
+		return originalPrice;
+	}
+	public void setOriginalPrice(Double originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+	public Double getDiscount() {
+		return discount;
+	}
+	public void setDiscount(Double discount) {
+		this.discount = discount;
+	}
+	public Double getActualPrice() {
+		return actualPrice;
+	}
+	public void setActualPrice(Double actualPrice) {
+		this.actualPrice = actualPrice;
+	}
+
+
+
 }

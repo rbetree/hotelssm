@@ -195,6 +195,20 @@ public class HomeAccountController {
 			ret.put("msg", "该房型已满房，请选择其他房型!");
 			return ret;
 		}
+
+		// 计算会员折扣价格
+		Double originalPrice = roomType.getPrice() != null ? roomType.getPrice() : 0.0;
+		Double discount = 1.0; // 默认无折扣
+		if(account.getLevel() == 1){
+			discount = 0.9; // 普通会员九折
+		}else if(account.getLevel() == 2){
+			discount = 0.8; // 高级会员八折
+		}
+		Double actualPrice = originalPrice * discount;
+
+		bookOrder.setOriginalPrice(originalPrice);
+		bookOrder.setDiscount(discount);
+		bookOrder.setActualPrice(actualPrice);
 		bookOrder.setCreateTime(new Date());
 		bookOrder.setStatus(0);
 		if(bookOrderService.add(bookOrder) <= 0){

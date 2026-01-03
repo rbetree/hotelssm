@@ -230,6 +230,7 @@
               <th>身份证号</th>
               <th>入住日期</th>
               <th>离店日期</th>
+              <th>实付价格</th>
               <th>状态</th>
               <th>下单时间</th>
               <th>备注</th>
@@ -250,6 +251,14 @@
 					<td>${bookOrder.idCard }</td>
 					<td>${bookOrder.arriveDate }</td>
 						<td>${bookOrder.leaveDate }</td>
+						<td>
+							<c:if test="${bookOrder.actualPrice != null && bookOrder.actualPrice > 0}">
+								<font color="#f00">￥${bookOrder.actualPrice}</font>
+							</c:if>
+							<c:if test="${bookOrder.actualPrice == null || bookOrder.actualPrice <= 0}">
+								-
+							</c:if>
+						</td>
 						<td>
 							<c:if test="${bookOrder.status == 0 }">
 				          		<font color="red">待确认</font>
