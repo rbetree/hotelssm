@@ -1,0 +1,276 @@
+/*
+  山卡拉主题（前台）：
+  通过“覆盖层”方式做轻量改造，避免大范围改动原模板 CSS。
+*/
+
+:root{
+  --sk-primary:#0f766e;
+  --sk-primary-dark:#115e59;
+  --sk-accent:#f59e0b;
+  --sk-text:#334155;
+  --sk-muted:#64748b;
+  --sk-border:#e2e8f0;
+  --sk-bg:#f8fafc;
+  --sk-card:#ffffff;
+  --sk-danger:#dc2626;
+}
+
+body{
+  background:var(--sk-bg);
+  color:var(--sk-text);
+}
+
+a{
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+a:hover{
+  color:var(--sk-primary);
+}
+
+/* 顶部条与导航：更清爽的浅色风格 */
+#header{
+  background:#f1f5f9;
+  border-bottom:1px solid var(--sk-border);
+}
+
+#head_main>ul.memu>li.welcome,
+.go_manage{
+  color:var(--sk-primary);
+}
+
+#nav{
+  background:var(--sk-card);
+  border-color:var(--sk-border);
+  box-shadow:0 2px 10px rgba(15,23,42,0.06);
+}
+
+#nav>div>ul.the_nav>li.core1>a{ border-bottom-color:var(--sk-primary); }
+#nav>div>ul.the_nav>li.core2>a{ border-bottom-color:#0284c7; }
+#nav>div>ul.the_nav>li.core3>a{ border-bottom-color:var(--sk-accent); }
+#nav>div>ul.the_nav>li.core4>a{ border-bottom-color:#7c3aed; }
+#nav>div>ul.the_nav>li.core5>a{ border-bottom-color:#e11d48; }
+#nav>div>ul.the_nav>li.core6>a{ border-bottom-color:#475569; }
+
+/* 首页预订列表：统一主色与卡片观感 */
+#subject,
+#guest_rooms{
+  border-color:var(--sk-border);
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--sk-card);
+}
+
+#subject>ul.shade_mag>li.hover{
+  background:var(--sk-primary);
+}
+
+#subject>div.schedule_box>p,
+#subject>div.schedule_box>ul>li>a{
+  background:var(--sk-primary);
+}
+
+#guest_rooms>div.chioce>input[type='text']{
+  border:1px solid var(--sk-border);
+  border-radius:10px;
+  padding:0 10px;
+}
+
+#guest_rooms>div.chioce>input[type='button']{
+  background:var(--sk-primary);
+  border-radius:10px;
+}
+
+#guest_rooms>div.chioce>input[type='button']:hover{
+  background:var(--sk-primary-dark);
+}
+
+#pro_list thead th{
+  background:#f1f5f9;
+  color:var(--sk-muted);
+}
+
+#pro_list tbody tr:hover{
+  background:#f0fdfa;
+}
+
+#pro_list input[type="button"]{
+  background:var(--sk-primary);
+  color:#fff;
+  border:0;
+  border-radius:10px;
+  height:34px;
+  line-height:34px;
+  padding:0 14px;
+  vertical-align:middle;
+}
+
+#pro_list input[type="button"].disable{
+  background:#e2e8f0;
+  color:#94a3b8;
+  cursor:not-allowed;
+}
+
+/* 登录/注册页：文字品牌替代旧图片 LOGO */
+.sk-brand{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:36px;
+  padding:0 12px;
+  margin-right:12px;
+  border-radius:10px;
+  background:rgba(15,118,110,0.10);
+  color:var(--sk-primary);
+  font-weight:800;
+  font-size:22px;
+  letter-spacing:1px;
+}
+
+.sk-brand:hover{
+  background:rgba(15,118,110,0.16);
+  color:var(--sk-primary-dark);
+}
+
+header div>span{
+  border-left-color:var(--sk-border);
+}
+
+/* 前台登录框：提亮 + 卡片化 */
+section>div.login{
+  background:var(--sk-card);
+  color:var(--sk-text);
+  border:1px solid var(--sk-border);
+  border-radius:12px;
+  box-shadow:0 12px 28px rgba(15,23,42,0.08);
+}
+
+section>div.login a{
+  color:var(--sk-primary);
+}
+
+section>div.login>div.log{
+  background:var(--sk-primary);
+  border-radius:10px;
+}
+
+section>div.login>div.log:hover{
+  background:var(--sk-primary-dark);
+}
+
+section>div.login #normal>div.codes>input{
+  border-color:var(--sk-primary);
+}
+
+/* 登录页“登 录”按钮：居中与间距修正（原页面有内联 margin-top，需 !important 覆盖） */
+#bt_login{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:40px;
+  line-height:40px;
+  margin-top:14px !important;
+}
+
+/* 验证码：输入框与图片同行展示（覆盖原 float/margin-top 逻辑） */
+section>div.login #normal>div.codes{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+section>div.login #normal>div.codes>input{
+  float:none !important;
+  width:120px;
+  height:34px;
+  line-height:34px;
+  padding:0 10px;
+  border-radius:10px;
+}
+
+section>div.login #normal>div.codes>img{
+  display:block;
+  margin-top:0 !important;
+  height:34px;
+  border-radius:10px;
+  border:1px solid var(--sk-border);
+}
+
+/* 注册页按钮 */
+#reg input[type="button"]{
+  background:var(--sk-primary);
+  border-radius:10px;
+}
+
+#reg input[type="button"]:hover{
+  background:var(--sk-primary-dark);
+}
+
+/* 预订页：按钮与强调色 */
+#btn_booking{
+  background:var(--sk-primary);
+}
+
+#btn_booking:hover{
+  background:var(--sk-primary-dark);
+}
+
+.jump>a{
+  color:var(--sk-primary);
+}
+
+.malog>.message a{
+  color:var(--sk-primary);
+}
+
+.total,
+.malog .num{
+  color:var(--sk-accent);
+}
+
+/* 校验/提示信息：统一为红色，避免“主色”承担错误语义 */
+.msg{
+  color:var(--sk-danger);
+}
+
+/* 用户中心：更柔和的侧栏与激活态 */
+.tabs{
+  background:#f1f5f9;
+  border:1px solid var(--sk-border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.tabs>li>a.active{
+  color:var(--sk-primary);
+}
+
+.totalPrice,
+.price{
+  color:var(--sk-accent);
+}
+
+/* 简单按钮：覆盖用户中心的查询/重置按钮 */
+button.btn-success{
+  background:var(--sk-primary);
+  border-color:var(--sk-primary);
+}
+
+button.btn-success:hover{
+  background:var(--sk-primary-dark);
+  border-color:var(--sk-primary-dark);
+}
+
+/* 页脚：更轻的存在感 */
+#c_footer{
+  padding:14px 0;
+  color:var(--sk-muted);
+}
+
+#c_footer a{
+  color:var(--sk-muted);
+}
+
+#c_footer a:hover{
+  color:var(--sk-primary);
+}

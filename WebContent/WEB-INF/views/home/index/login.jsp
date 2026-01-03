@@ -4,18 +4,19 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
- <meta name="Author" content="灵悟">
-  <meta name="Keywords" content="灵悟酒店管理系统">
-  <meta name="Description" content="灵悟酒店管理系统">
-  <title>灵悟|酒店管理系统登录页面</title>
+ <meta name="Author" content="山卡拉">
+  <meta name="Keywords" content="山卡拉酒店管理系统">
+  <meta name="Description" content="山卡拉酒店管理系统">
+  <title>山卡拉 | 酒店管理系统登录</title>
   <link href="../resources/home/css/index.css" type="text/css" rel="Stylesheet" />
   <link href="../resources/home/css/login.css" type="text/css" rel="Stylesheet" />
+  <link href="../resources/home/css/sankala-theme.css" type="text/css" rel="Stylesheet" />
  </head>
  <body>
 
        <header>
 	          <div>
-							<a href="index.html"><img src="../HotelSSM/WebContent/resources/home/images/logo-1.jpg" alt=""></a> <span>会员登录</span>
+							<a href="index" class="sk-brand">山卡拉</a> <span>会员登录</span>
 			  </div>
 
 	   </header>

@@ -4,13 +4,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-  <title>灵悟|酒店管理系统预定房间</title>
-  <meta name="Author" content="灵悟">
-  <meta name="Keywords" content="灵悟">
-  <meta name="Description" content="灵悟酒店管理系统">
+  <title>山卡拉 | 酒店管理系统预定房间</title>
+  <meta name="Author" content="山卡拉">
+    <meta name="Keywords" content="山卡拉">
+    <meta name="Description" content="山卡拉酒店管理系统">
     <link rel="stylesheet" href="../../resources/home/css/index.css">
     <link rel="stylesheet" href="../../resources/home/css/order.css">
     <link rel="stylesheet" href="../../resources/home/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="../../resources/home/css/sankala-theme.css">
 </head>
 <body>
 <!--- 页头--->

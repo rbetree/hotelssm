@@ -5,10 +5,10 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <title>灵悟|酒店管理系统用户中心</title>
-  <meta name="Author" content="灵悟">
-  <meta name="Keywords" content="灵悟酒店管理系统">
-  <meta name="Description" content="灵悟酒店管理系统">
+  <title>山卡拉 | 酒店管理系统用户中心</title>
+  <meta name="Author" content="山卡拉">
+  <meta name="Keywords" content="山卡拉酒店管理系统">
+  <meta name="Description" content="山卡拉酒店管理系统">
   <link rel="stylesheet" href="../../resources/home/css/index.css"/>
   <link rel="stylesheet" href="../../resources/home/css/jquery-ui.min.css"/>
   <!--<link rel="stylesheet" href="css/myOrder.css"/>-->
@@ -174,6 +174,7 @@
 }
 
   </style>
+  <link rel="stylesheet" href="../../resources/home/css/sankala-theme.css"/>
 </head>
 <body>
     <!--头部-->

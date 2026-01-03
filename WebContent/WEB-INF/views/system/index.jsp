@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="copyright" content="All Rights Reserved, Copyright (C) 2013, 灵悟, Ltd." />
+<meta name="copyright" content="All Rights Reserved, Copyright (C) 2026, 山卡拉, Ltd." />
 <title>后台管理主页</title>
 <link rel="stylesheet" type="text/css" href="../resources/admin/easyui/easyui/1.3.4/themes/default/easyui.css" />
 <link rel="stylesheet" type="text/css" href="../resources/admin/easyui/css/wu.css" />
@@ -34,7 +34,7 @@
 	<!-- begin of header -->
 	<div class="wu-header" data-options="region:'north',border:false,split:true">
     	<div class="wu-header-left">
-        	<h1>【灵悟酒店】后台管理系统</h1>
+        	<h1>【山卡拉酒店】后台管理系统</h1>
         </div>
         <div class="wu-header-right">
         	<p><strong class="easyui-tooltip" title="0条未读消息">${role.name}:${admin.username}</strong>，欢迎您！</p>
@@ -68,7 +68,7 @@
     <!-- end of main --> 
     <!-- begin of footer -->
 	<div class="wu-footer" data-options="region:'south',border:true,split:true">
-    	&copy; 2021 【灵悟】 LingWu Hotel Management
+    	&copy; 2026 【山卡拉】 山卡拉酒店管理系统
     </div>
     <!-- end of footer -->  
     <script type="text/javascript">

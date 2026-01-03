@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>灵悟管理员登录</title>
+  <title>山卡拉管理员登录</title>
   <meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
   <meta name="author" content="Vincent Garreau">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,7 +15,7 @@
 <div id="particles-js">
 		<div class="login" style="display: block;">
 			<div class="login-top">
-				登录
+				山卡拉后台登录
 			</div>
 			<div class="login-center clearfix">
 				<div class="login-center-img"><img src="../resources/admin/login/images/name.png"></div>

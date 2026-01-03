@@ -4,10 +4,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
- <meta name="Author" content="灵悟">
-  <meta name="Keywords" content="灵悟酒店管理系统">
-  <meta name="Description" content="灵悟酒店管理系统">
-  <title>灵悟|酒店管理系统注册页面</title>
+ <meta name="Author" content="山卡拉">
+  <meta name="Keywords" content="山卡拉酒店管理系统">
+  <meta name="Description" content="山卡拉酒店管理系统">
+  <title>山卡拉 | 酒店管理系统注册</title>
   <link href="../resources/home/css/login.css" type="text/css" rel="Stylesheet" />
   <link href="../resources/home/css/regsiter.css" type="text/css" rel="Stylesheet" />
   <link href="../resources/home/css/index.css" type="text/css" rel="Stylesheet" />
@@ -16,13 +16,14 @@
        margin:0;
     }
   </style>
+  <link href="../resources/home/css/sankala-theme.css" type="text/css" rel="Stylesheet" />
 </head>
 <body>
   <!--头部-->
 
   <header>
     <div>
-      <a href=""><img src="/HotelSSM/WebContent/resources/home/images/logo-1.jpg" alt=""> </a> <span>注册</span>
+      <a href="index" class="sk-brand">山卡拉</a> <span>注册</span>
     </div>
 
   </header>

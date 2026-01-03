@@ -4,10 +4,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>灵悟|酒店管理系统修改预定</title>
-    <meta name="Author" content="灵悟">
-    <meta name="Keywords" content="灵悟">
-    <meta name="Description" content="灵悟酒店管理系统">
+    <title>山卡拉 | 酒店管理系统修改预定</title>
+    <meta name="Author" content="山卡拉">
+    <meta name="Keywords" content="山卡拉">
+    <meta name="Description" content="山卡拉酒店管理系统">
     <link rel="stylesheet" href="../../resources/home/css/index.css">
     <link rel="stylesheet" href="../../resources/home/css/order.css">
     <link rel="stylesheet" href="../../resources/home/css/jquery-ui.min.css">
@@ -20,6 +20,7 @@
         .form-select{height:30px;min-width:220px;}
         .hint{color:#666;font-size:12px;line-height:20px;margin:8px 0;}
     </style>
+    <link rel="stylesheet" href="../../resources/home/css/sankala-theme.css">
 </head>
 <body>
 <div id="c_header"></div>
